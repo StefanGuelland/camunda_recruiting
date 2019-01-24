@@ -1,0 +1,38 @@
+version: '2.3'
+
+services:
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: camunda
+      POSTGRES_PASSWORD: camunda
+      POSTGRES_DB: process-engine
+
+  camunda:
+    image: camunda/camunda-bpm-platform:latest
+    restart: unless-stopped
+    environment:
+      - DB_DRIVER=org.postgresql.Driver
+      - DB_URL=jdbc:postgresql://db:5432/process-engine
+      - DB_USERNAME=camunda
+      - DB_PASSWORD=camunda
+      - WAIT_FOR=db:5432
+      - WAIT_FOR_TIMEOUT=60
+      - TZ=Europe/Berlin
+    mem_limit: 500M
+    memswap_limit: 600M
+    ports:
+    - 8090:8080
+
+  simple-worker:
+    build: ./simple-worker/
+    restart: unless-stopped
+    environment:
+      REST_API: http://camunda:8080/engine-rest
+
+  simple-rest:
+    build: ./simple-rest/
+    restart: unless-stopped
+    environment:
+      REST_API: http://camunda:8080/engine-rest
