@@ -40,3 +40,5 @@ Download the platformspecific camunda modler:
 <https://camunda.com/download/modeler/>
 
 Open the bpmn files and start working :P.
+
+The executed bpmn modle is named RecruitingOperativ2.bpmn
